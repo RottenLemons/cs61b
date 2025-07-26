@@ -52,11 +52,11 @@ public class GameLogic {
 
     public static void shiftBoard(int[][] board) {
         for (int r = 0; r < board.length; r++) {
-            board[r] = shiftRow(board[r]);
+            shiftRow(board[r]);
         }
     }
 
-    public static int[] shiftRow(int[] row) {
+    public static void shiftRow(int[] row) {
         int countX = 0;
         for (int c = 0; c < row.length; c++) {
             if (row[c] == 0) {
@@ -69,23 +69,20 @@ public class GameLogic {
         for (int c = 0; c < countX; c++) {
             row[row.length - c - 1] = 0;
         }
-
-        return row;
     }
 
     public static void merge(int[][] board) {
         for (int r = 0; r < board.length; r++) {
-            board[r] = mergeRow(board[r]);
+            mergeRow(board[r]);
         }
     }
 
-    public static int[] mergeRow(int[] row) {
+    public static void mergeRow(int[] row) {
         for (int c = 0; c < row.length - 1; c++) {
             if (row[c] + row[c + 1] != 0 && row[c] == row[c + 1]) {
                 row[c] *= 2;
                 row[c + 1] = 0;
             }
         }
-        return row;
     }
 }
