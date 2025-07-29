@@ -92,7 +92,18 @@ public class MachineStage implements AdventureStage {
      * Returns the sum of integers a and b.
      */
     public static int mysteryAdd(int a, int b) {
-        return a + b;
+        int x = a, y = b;
+        int xor, and, temp;
+        and = x & y;
+        xor = x ^ y;
+
+        while (and != 0) {
+            and <<= 1;
+            temp = xor ^ and;
+            and &= xor;
+            xor = temp;
+        }
+        return xor;
     }
 
     /**
