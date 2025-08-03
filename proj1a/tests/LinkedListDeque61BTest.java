@@ -88,6 +88,12 @@ public class LinkedListDeque61BTest {
 
         lld1.removeLast();
         assertThat(lld1.size()).isEqualTo(0);
+
+        lld1.removeLast();
+        assertThat(lld1.size()).isEqualTo(0);
+
+        lld1.removeFirst();
+        assertThat(lld1.size()).isEqualTo(0);
     }
 
     @Test
@@ -149,8 +155,6 @@ public class LinkedListDeque61BTest {
     public void removeFirstAndRemoveLastTest() {
         Deque61B<Integer> lld1 = new LinkedListDeque61B<>();
 
-         /* I've decided to add in comments the state after each call for the convenience of the
-            person reading this test. Some programmers might consider this excessively verbose. */
         lld1.addLast(0);   // [0]
         lld1.addLast(1);   // [0, 1]
         lld1.addFirst(-1); // [-1, 0, 1]
@@ -162,5 +166,30 @@ public class LinkedListDeque61BTest {
         assertThat(lld1.removeFirst()).isEqualTo(-1);
         assertThat(lld1.removeLast()).isEqualTo(1);
         assertThat(lld1.removeFirst()).isEqualTo(0);
+    }
+
+    @Test
+    /** This test performs all operations on deque */
+    public void dequeChangeTest() {
+        Deque61B<Integer> lld1 = new LinkedListDeque61B<>();
+
+        lld1.addLast(0);   // [0]
+        lld1.addLast(1);   // [0, 1]
+        lld1.addFirst(-1); // [-1, 0, 1]
+        lld1.addLast(2);   // [-1, 0, 1, 2]
+        lld1.addFirst(-2); // [-2, -1, 0, 1, 2]
+
+        assertThat(lld1.removeLast()).isEqualTo(2);
+        assertThat(lld1.removeFirst()).isEqualTo(-2);
+        assertThat(lld1.removeFirst()).isEqualTo(-1);
+        assertThat(lld1.removeLast()).isEqualTo(1);
+        assertThat(lld1.removeFirst()).isEqualTo(0);
+
+        lld1.addLast(0);
+        assertThat(lld1.toList()).containsExactly(0).inOrder();
+
+        lld1.removeFirst();
+        lld1.addFirst(1);
+        assertThat(lld1.toList()).containsExactly(1).inOrder();
     }
 }
