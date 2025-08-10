@@ -6,14 +6,14 @@ import java.util.List;
 public class ArrayDeque61B<T> implements Deque61B<T>{
     T[] deque;
     int size;
-    int firstIdx; // Can be negative
-    int lastIdx; // Can be negative
+    int firstIdx; // Index of first element, Can be negative
+    int afterLastIdx; // Index after last element Can be negative
 
     public ArrayDeque61B() {
         deque = (T[]) new Object[8];
         size = 0;
         firstIdx = 0;
-        lastIdx = 0;
+        afterLastIdx = 0;
     }
 
     @Override
@@ -31,25 +31,25 @@ public class ArrayDeque61B<T> implements Deque61B<T>{
         if (this.size + 1 > this.deque.length) {
             expandDeque();
         }
-        this.lastIdx = this.lastIdx + 1 % this.deque.length;
-        this.deque[this.lastIdx] = x;
+        this.deque[Math.floorMod(this.afterLastIdx, this.deque.length)] = x;
+        this.afterLastIdx++;
         this.size++;
     }
 
     private void expandDeque() {
         T[] newDeque = (T[]) new Object[this.deque.length * 2];
-        for (int i = this.firstIdx; i < this.lastIdx ; i++) {
+        for (int i = this.firstIdx; i < this.afterLastIdx ; i++) {
             newDeque[i - this.firstIdx] = this.deque[Math.floorMod(i, this.deque.length)];
         }
         this.deque = newDeque;
         this.firstIdx = 0;
-        this.lastIdx = size();
+        this.afterLastIdx = size();
     }
 
     @Override
     public List<T> toList() {
         List<T> listRepr = new ArrayList<>();
-        for (int i = this.firstIdx; i < this.lastIdx ; i++) {
+        for (int i = this.firstIdx; i < this.afterLastIdx ; i++) {
             listRepr.add(this.deque[Math.floorMod(i, this.deque.length)]);
         }
 
@@ -68,12 +68,24 @@ public class ArrayDeque61B<T> implements Deque61B<T>{
 
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        T item = this.deque[Math.floorMod(this.firstIdx, this.deque.length)];
+        this.firstIdx++;
+        this.size--;
+        return item;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        this.afterLastIdx--;
+        T item = this.deque[Math.floorMod(this.afterLastIdx, this.deque.length)];
+        this.size--;
+        return item;
     }
 
     @Override

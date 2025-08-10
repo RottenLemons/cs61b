@@ -30,8 +30,8 @@ public class ArrayDeque61BTest {
         a.addFirst(2);
         a.addFirst(3);
 
-        assertThat(a.get(5)).isEqualTo(null);
-        assertThat(a.get(-1)).isEqualTo(null);
+        assertThat(a.get(5)).isNull();
+        assertThat(a.get(-1)).isNull();
         assertThat(a.get(0)).isEqualTo(3);
         assertThat(a.get(2)).isEqualTo(1);
     }
@@ -44,8 +44,10 @@ public class ArrayDeque61BTest {
         a.addFirst(3);
         a.addFirst(2);
         a.addFirst(1);
+        a.addLast(4);
+        a.addLast(5);
         a.toList();
-        assertThat(a.toList()).containsExactly(1, 2, 3).inOrder();
+        assertThat(a.toList()).containsExactly(1, 2, 3, 4, 5).inOrder();
     }
 
     @Test
@@ -55,10 +57,79 @@ public class ArrayDeque61BTest {
         a.addFirst(3);
         a.addFirst(2);
         a.addFirst(1);
+        a.addFirst(1);
+        a.addFirst(1);
+        a.addFirst(1);
+        a.addFirst(1);
+        a.addFirst(1);
+        a.addFirst(1);
 
-        assertThat(a.toList()).containsExactly(1, 2, 3).inOrder();
+        assertThat(a.toList()).containsExactly(1, 1, 1, 1, 1, 1, 1, 2, 3).inOrder();
     }
 
+    @Test
+    public void addLastTest() {
+        ArrayDeque61B<Integer> a = new ArrayDeque61B<>();
 
+        a.addLast(3);
+        a.addLast(2);
+        a.addLast(1);
 
+        assertThat(a.toList()).containsExactly(3, 2, 1).inOrder();
+    }
+
+    @Test
+    public void sizeTest() {
+        ArrayDeque61B<Integer> a = new ArrayDeque61B<>();
+
+        a.addLast(3);
+        a.addLast(2);
+        a.addLast(1);
+
+        assertThat(a.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void isEmptyTest() {
+        ArrayDeque61B<Integer> a = new ArrayDeque61B<>();
+        assertThat(a.isEmpty()).isTrue();
+
+        a.addLast(3);
+        a.addLast(2);
+        a.addLast(1);
+
+        assertThat(a.isEmpty()).isFalse();
+    }
+
+    @Test
+    public void removeFirstTest() {
+        ArrayDeque61B<Integer> a = new ArrayDeque61B<>();
+        assertThat(a.removeFirst()).isNull();
+        a.addLast(3);
+        a.addLast(2);
+        a.addLast(1);
+
+        assertThat(a.removeFirst()).isEqualTo(3);
+        assertThat(a.removeFirst()).isEqualTo(2);
+        assertThat(a.removeFirst()).isEqualTo(1);
+
+        a.addLast(1);
+        assertThat(a.toList()).containsExactly(1);
+    }
+
+    @Test
+    public void removeLastTest() {
+        ArrayDeque61B<Integer> a = new ArrayDeque61B<>();
+        assertThat(a.removeLast()).isNull();
+        a.addLast(3);
+        a.addLast(2);
+        a.addLast(1);
+
+        assertThat(a.removeLast()).isEqualTo(1);
+        assertThat(a.removeLast()).isEqualTo(2);
+        assertThat(a.removeLast()).isEqualTo(3);
+
+        a.addLast(1);
+        assertThat(a.toList()).containsExactly(1);
+    }
 }
