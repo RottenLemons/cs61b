@@ -1,5 +1,7 @@
 import deque.ArrayDeque61B;
 
+import deque.Deque61B;
+import deque.LinkedListDeque61B;
 import jh61b.utils.Reflection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,5 +133,50 @@ public class ArrayDeque61BTest {
 
         a.addLast(1);
         assertThat(a.toList()).containsExactly(1);
+    }
+
+    @Test
+    public void iteratorTest() {
+        Deque61B<String> lld1 = new LinkedListDeque61B<>();
+
+        lld1.addLast("front"); // after this call we expect: ["front"]
+        lld1.addLast("middle"); // after this call we expect: ["front", "middle"]
+        lld1.addLast("back"); // after this call we expect: ["front", "middle", "back"]
+        assertThat(lld1).containsExactly("front", "middle", "back");
+
+        lld1 = new ArrayDeque61B<>();
+
+        lld1.addLast("front"); // after this call we expect: ["front"]
+        lld1.addLast("middle"); // after this call we expect: ["front", "middle"]
+        lld1.addLast("back"); // after this call we expect: ["front", "middle", "back"]
+        assertThat(lld1).containsExactly("front", "middle", "back");
+    }
+
+    @Test
+    public void equalsTest() {
+        Deque61B<String> lld1 = new LinkedListDeque61B<>();
+
+        lld1.addLast("front"); // after this call we expect: ["front"]
+        lld1.addLast("middle"); // after this call we expect: ["front", "middle"]
+        lld1.addLast("back"); // after this call we expect: ["front", "middle", "back"]
+
+        Deque61B<String> lld2 = new ArrayDeque61B<>();
+
+        lld2.addLast("front"); // after this call we expect: ["front"]
+        lld2.addLast("middle"); // after this call we expect: ["front", "middle"]
+        assertThat(lld1).isNotEqualTo(lld2);
+        lld2.addLast("back"); // after this call we expect: ["front", "middle", "back"]
+        assertThat(lld1).isEqualTo(lld2);
+    }
+
+    @Test
+    public void toStringTest() {
+        Deque61B<String> lld1 = new LinkedListDeque61B<>();
+
+        lld1.addLast("front"); // after this call we expect: ["front"]
+        lld1.addLast("middle"); // after this call we expect: ["front", "middle"]
+        lld1.addLast("back"); // after this call we expect: ["front", "middle", "back"]
+
+        assertThat(lld1.toString()).isEqualTo("[front, middle, back]");
     }
 }
