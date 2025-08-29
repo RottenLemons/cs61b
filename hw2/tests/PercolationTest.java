@@ -78,11 +78,125 @@ public class PercolationTest {
         assertThat(p.percolates()).isTrue();
     }
 
-    // TODO: Using the given tests above as a template,
-    //       write some more tests and delete the fail() line
+
     @Test
-    public void yourFirstTestHere() {
-        fail("Did you write your own tests?");
+    public void isOpenTest() {
+        int N = 2;
+        Percolation p = new Percolation(N);
+        int[][] openSites = {
+                {0, 1},
+                {1, 0},
+        };
+
+        int[][] closeSites = {
+                {0, 0},
+                {1, 1},
+        };
+
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+            p.open(site[0], site[1]);
+            assertThat(p.isOpen(site[0], site[1])).isTrue();
+        }
+
+        for (int[] site : closeSites) {
+            assertThat(p.isOpen(site[0], site[1])).isFalse();
+        }
     }
 
+    @Test
+    public void numberOfOpenSitesTest() {
+        int N = 2;
+        Percolation p = new Percolation(N);
+        int expected = 2;
+        int[][] openSites = {
+                {0, 1},
+                {1, 0},
+        };
+
+
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+            p.open(site[0], site[1]);
+        }
+
+        assertThat(p.numOfOpenSites).isEqualTo(expected);
+    }
+
+    @Test
+    public void isFullTest() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        int[][] openSites = {
+                {0, 1},
+                {1, 0},
+                {2, 0},
+                {1, 1},
+                {2, 2}
+        };
+
+        int[][] notFullSites = {
+                {0, 0},
+                {1, 2},
+                {2, 2}
+        };
+
+        int[][] fullSites = {
+                {0, 1},
+                {1, 0},
+                {2, 0},
+        };
+
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+        }
+
+        for (int[] site : fullSites) {
+            assertThat(p.isFull(site[0], site[1])).isTrue();
+        }
+
+        for (int[] site : notFullSites) {
+            assertThat(p.isFull(site[0], site[1])).isFalse();
+        }
+    }
+
+    @Test
+    public void percolationTest() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        int[][] openSites = {
+                {0, 1},
+                {1, 0},
+                {2, 0},
+                {2, 2}
+        };
+
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+            assertThat(p.percolates()).isFalse();
+        }
+
+        p.open(1, 1);
+        assertThat(p.percolates()).isTrue();
+    }
+
+    @Test
+    public void backwashTest() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        int[][] openSites = {
+                {0, 0},
+                {1, 0},
+                {1, 2},
+                {2, 0},
+                {2, 2},
+        };
+
+        for (int[] site : openSites) {
+            p.open(site[0], site[1]);
+        }
+
+        assertThat(p.isFull(1, 2)).isFalse();
+        assertThat(p.isFull(2, 2)).isFalse();
+    }
 }
