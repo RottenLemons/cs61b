@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -10,10 +11,44 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         V value;
         Node left;
         Node right;
+        Node parent;
 
         public Node(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+    }
+
+    private class BSTMapIterator implements Iterator<K> {
+        private Set<K> keys;
+        private Iterator<K> keyIterator;
+
+        private BSTMapIterator() {
+            addToSet(root, keys);
+            keyIterator = keys.iterator();
+        }
+
+        /**
+         * Returns {@code true} if the iteration has more elements.
+         * (In other words, returns {@code true} if {@link #next} would
+         * return an element rather than throwing an exception.)
+         *
+         * @return {@code true} if the iteration has more elements
+         */
+        @Override
+        public boolean hasNext() {
+            return keyIterator.hasNext();
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element in the iteration
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
+        @Override
+        public K next() {
+            return keyIterator.next();
         }
     }
 
@@ -27,17 +62,19 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public void put(K key, V value) {
-        root = putRecursive(root, key, value);
-        size++;
+        this.root = putRecursive(this.root, key, value);
     }
 
     private Node putRecursive(Node node, K key, V value) {
         if (node == null) {
+            this.size++;
             return new Node(key, value);
         } else if (key.compareTo(node.key) > 0) {
             node.right = putRecursive(node.right, key, value);
-        } else {
+        } else if (key.compareTo(node.key) < 0) {
             node.left = putRecursive(node.left, key, value);
+        } else {
+            node.value = value;
         }
         return node;
     }
@@ -50,7 +87,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public V get(K key) {
-        return recursiveGet(root, key).value;
+        return recursiveGet(this.root, key).value;
     }
 
     private Node recursiveGet(Node node, K key) {
@@ -72,7 +109,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public boolean containsKey(K key) {
-        return Objects.isNull(recursiveGet(root, key).key);
+        return !Objects.isNull(recursiveGet(this.root, key).key);
     }
 
     /**
@@ -80,7 +117,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public int size() {
-        return 0;
+        return this.size;
     }
 
     /**
@@ -88,8 +125,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public void clear() {
-        size = 0;
-        root = null;
+        this.size = 0;
+        this.root = null;
     }
 
     /**
@@ -98,7 +135,19 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public Set<K> keySet() {
-        return Set.of();
+        Set<K> keySet = new HashSet<>();
+        addToSet(this.root, keySet);
+        return keySet;
+    }
+
+    private void addToSet(Node node, Set<K> keySet) {
+        if (node == null) {
+            return;
+        }
+
+        addToSet(node.left, keySet);
+        keySet.add(node.key);
+        addToSet(node.right, keySet);
     }
 
     /**
@@ -111,6 +160,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public V remove(K key) {
+
         return null;
     }
 
@@ -121,6 +171,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return new BSTMapIterator();
     }
 }
