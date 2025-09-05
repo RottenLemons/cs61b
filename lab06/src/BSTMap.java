@@ -1,7 +1,4 @@
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     Node root;
@@ -11,7 +8,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         V value;
         Node left;
         Node right;
-        Node parent;
 
         public Node(K key, V value) {
             this.key = key;
@@ -27,6 +23,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
             addToSet(root, keys);
             keyIterator = keys.iterator();
         }
+
 
         /**
          * Returns {@code true} if the iteration has more elements.
@@ -50,6 +47,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
         public K next() {
             return keyIterator.next();
         }
+    }
+
+    private enum ChildType {
+        ROOT, LEFT, RIGHT
     }
 
     /**
@@ -135,7 +136,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public Set<K> keySet() {
-        Set<K> keySet = new HashSet<>();
+        Set<K> keySet = new TreeSet<>();
         addToSet(this.root, keySet);
         return keySet;
     }
@@ -160,8 +161,59 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
      */
     @Override
     public V remove(K key) {
+        Node parent = null;
+        Node child = this.root;
+        ChildType flag = ChildType.ROOT;
+        while (child != null && child.key != key) {
+            parent = child;
+            if (key.compareTo(child.key) > 0) {
+                child = child.right;
+                flag = ChildType.RIGHT;
+            } else {
+                child = child.left;
+                flag = ChildType.LEFT;
+            }
+        }
+        if (child == null) {
+            return null;
+        }
 
-        return null;
+        putChild(child, parent, flag);
+        this.size--;
+        return child.value;
+    }
+
+    private Node newChild(Node node) {
+        if (node.left == null && node.right == null) {
+            return null;
+        } else if (node.left == null) {
+            return node.right;
+        } else if (node.right == null) {
+            return node.left;
+        }
+
+        Node smallestRight = node.right;
+        Node parent = node;
+        ChildType flag = ChildType.RIGHT;
+        while (smallestRight.left != null) {
+            flag = ChildType.LEFT;
+            parent = smallestRight;
+            smallestRight = smallestRight.left;
+        }
+        putChild(smallestRight, parent, flag);
+        smallestRight.left = node.left;
+        smallestRight.right = node.right;
+        return smallestRight;
+    }
+
+    private void putChild(Node child, Node parent, ChildType flag) {
+        if (flag == ChildType.LEFT) {
+            parent.left = newChild(child);
+        } else if (flag == ChildType.RIGHT) {
+            parent.right = newChild(child);
+        } else {
+            this.root = newChild(child);
+        }
     }
 
     /**
