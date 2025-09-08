@@ -49,6 +49,32 @@ public class TimeSeriesTest {
     }
 
     @Test
+    public void testDivide() {
+        TimeSeries catPopulation = new TimeSeries();
+        catPopulation.put(1991, 0.0);
+        catPopulation.put(1992, 100.0);
+        catPopulation.put(1994, 200.0);
+
+        TimeSeries dogPopulation = new TimeSeries();
+        dogPopulation.put(1991, 3.0);
+        dogPopulation.put(1992, 100.0);
+        dogPopulation.put(1994, 400.0);
+        dogPopulation.put(1995, 500.0);
+
+        TimeSeries dividePopulation = catPopulation.dividedBy(dogPopulation);
+
+        List<Double> expectedDivide = new ArrayList<>();
+        expectedDivide.add(0.0);
+        expectedDivide.add(1.0);
+        expectedDivide.add(0.5);
+
+        for (int i = 0; i < expectedDivide.size(); i += 1) {
+            assertThat(dividePopulation.data().get(i)).isWithin(1E-10).of(expectedDivide.get(i));
+        }
+    }
+
+
+    @Test
     public void testEmptyBasic() {
         TimeSeries catPopulation = new TimeSeries();
         TimeSeries dogPopulation = new TimeSeries();

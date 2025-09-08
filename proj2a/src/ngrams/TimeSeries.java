@@ -90,13 +90,13 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         TimeSeries newTS = new TimeSeries();
-        newTS.forEach((key, value) -> {
+        this.forEach((key, value) -> {
             if (!ts.containsKey(key)) {
                 throw new IllegalArgumentException();
             }
 
             newTS.put(key, value/ts.get(key));
         });
-        return null;
+        return newTS;
     }
 }
