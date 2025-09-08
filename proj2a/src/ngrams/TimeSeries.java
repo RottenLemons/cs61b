@@ -1,5 +1,6 @@
 package ngrams;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -30,15 +31,14 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-        // TODO: Fill in this constructor.
+        this.putAll(ts.subMap(startYear, true, endYear, true));
     }
 
     /**
      *  Returns all years for this time series in ascending order.
      */
     public List<Integer> years() {
-        // TODO: Fill in this method.
-        return null;
+        return new ArrayList<>(this.keySet());
     }
 
     /**
@@ -46,8 +46,7 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      *  order of years().
      */
     public List<Double> data() {
-        // TODO: Fill in this method.
-        return null;
+        return new ArrayList<>(this.values());
     }
 
     /**
@@ -61,7 +60,23 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries plus(TimeSeries ts) {
         // TODO: Fill in this method.
-        return null;
+        if (ts.isEmpty() && this.isEmpty()) {
+            return new TimeSeries();
+        } else if (this.isEmpty()) {
+            return new TimeSeries(ts, ts.firstKey(), ts.lastKey());
+        } else if (ts.isEmpty()) {
+            return new TimeSeries(this, this.firstKey(), this.lastKey());
+        }
+        TimeSeries newTS = new TimeSeries();
+        int minYear = Math.min(ts.firstKey(), this.firstKey());
+        int maxYear = Math.max(ts.lastKey(), this.lastKey());
+
+        for (int i = minYear; i <= maxYear; i++) {
+            if (this.containsKey(i) || ts.containsKey(i)) {
+                newTS.put(i, this.getOrDefault(i, 0.0) + ts.getOrDefault(i, 0.0));
+            }
+        }
+        return newTS;
     }
 
     /**
@@ -74,10 +89,14 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      * If TS has a year that is not in this TimeSeries, ignore it.
      */
     public TimeSeries dividedBy(TimeSeries ts) {
-        // TODO: Fill in this method.
+        TimeSeries newTS = new TimeSeries();
+        newTS.forEach((key, value) -> {
+            if (!ts.containsKey(key)) {
+                throw new IllegalArgumentException();
+            }
+
+            newTS.put(key, value/ts.get(key));
+        });
         return null;
     }
-
-    // TODO: Add any private helper methods.
-    // TODO: Remove all TODO comments before submitting.
 }
