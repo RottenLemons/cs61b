@@ -1,6 +1,9 @@
 package ngrams;
 
+import edu.princeton.cs.algs4.In;
+
 import java.util.Collection;
+import java.util.HashMap;
 
 import static ngrams.TimeSeries.MAX_YEAR;
 import static ngrams.TimeSeries.MIN_YEAR;
@@ -16,14 +19,36 @@ import static ngrams.TimeSeries.MIN_YEAR;
  * @author Josh Hug
  */
 public class NGramMap {
-
-    // TODO: Add any necessary static/instance variables.
+    private HashMap<String, TimeSeries> wordSeries;
+    private TimeSeries countSeries;
 
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
      */
     public NGramMap(String wordsFilename, String countsFilename) {
-        // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
+        this.wordSeries = new HashMap<>();
+        this.countSeries = new TimeSeries();
+        In wordsIn = new In(wordsFilename);
+        In countsIn = new In(countsFilename);
+
+        while (wordsIn.hasNextLine()) {
+            String word = wordsIn.readString();
+            int year = wordsIn.readInt();
+            double numTimes = wordsIn.readDouble();
+
+            if (!this.wordSeries.containsKey(word)) {
+                this.wordSeries.put(word, new TimeSeries());
+            }
+            this.wordSeries.get(word).put(year, numTimes);
+            wordsIn.readLine();
+        }
+
+        while (countsIn.hasNextLine()) {
+            String[] line = countsIn.readLine().split(",");
+            int year = Integer.parseInt(line[0]);
+            double numTotalWords = Double.parseDouble(line[1]);
+            this.countSeries.put(year, numTotalWords);
+        }
     }
 
     /**
@@ -34,8 +59,7 @@ public class NGramMap {
      * returns an empty TimeSeries.
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        return new TimeSeries(this.wordSeries.getOrDefault(word, new TimeSeries()), startYear, endYear);
     }
 
     /**
@@ -45,16 +69,14 @@ public class NGramMap {
      * is not in the data files, returns an empty TimeSeries.
      */
     public TimeSeries countHistory(String word) {
-        // TODO: Fill in this method.
-        return null;
+        return new TimeSeries(this.wordSeries.getOrDefault(word, new TimeSeries()), MIN_YEAR, MAX_YEAR);
     }
 
     /**
      * Returns a defensive copy of the total number of words recorded per year in all volumes.
      */
     public TimeSeries totalCountHistory() {
-        // TODO: Fill in this method.
-        return null;
+        return new TimeSeries(this.countSeries, MIN_YEAR, MAX_YEAR);
     }
 
     /**
@@ -63,8 +85,7 @@ public class NGramMap {
      * TimeSeries.
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        return this.countHistory(word, startYear, endYear).dividedBy(this.countSeries);
     }
 
     /**
@@ -73,8 +94,7 @@ public class NGramMap {
      * TimeSeries.
      */
     public TimeSeries weightHistory(String word) {
-        // TODO: Fill in this method.
-        return null;
+        return this.countHistory(word).dividedBy(this.countSeries);
     }
 
     /**
@@ -84,8 +104,11 @@ public class NGramMap {
      */
     public TimeSeries summedWeightHistory(Collection<String> words,
                                           int startYear, int endYear) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries newTS = new TimeSeries();
+        for (String word : words) {
+            newTS = newTS.plus(this.countHistory(word, startYear, endYear));
+        }
+        return newTS.dividedBy(this.countSeries);
     }
 
     /**
@@ -93,10 +116,10 @@ public class NGramMap {
      * exist in this time frame, ignore it rather than throwing an exception.
      */
     public TimeSeries summedWeightHistory(Collection<String> words) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries newTS = new TimeSeries();
+        for (String word : words) {
+            newTS = newTS.plus(this.countHistory(word));
+        }
+        return newTS.dividedBy(this.countSeries);
     }
-
-    // TODO: Add any private helper methods.
-    // TODO: Remove all TODO comments before submitting.
 }
