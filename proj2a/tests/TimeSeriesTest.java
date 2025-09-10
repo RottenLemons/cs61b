@@ -87,4 +87,40 @@ public class TimeSeriesTest {
         assertThat(totalPopulation.years()).isEmpty();
         assertThat(totalPopulation.data()).isEmpty();
     }
+
+    @Test
+    public void testConstructor() {
+        TimeSeries catPopulation = new TimeSeries();
+        catPopulation.put(1991, 0.0);
+        catPopulation.put(1992, 100.0);
+        catPopulation.put(1994, 200.0);
+        catPopulation.put(1995, 200.0);
+        catPopulation.put(1996, 200.0);
+        catPopulation.put(1997, 200.0);
+
+        TimeSeries catPopSub = new TimeSeries(catPopulation, 1993, 1997);
+        catPopulation.put(1995, 20.0);
+
+        double expected = 200.0;
+
+        for (int i = 0; i < 1997 - 1993; i += 1) {
+            assertThat(catPopSub.data().get(i)).isWithin(1E-10).of(expected);
+        }
+    }
+
+    @Test
+    public void testYears() {
+        TimeSeries catPopulation = new TimeSeries();
+        catPopulation.put(1991, 0.0);
+        catPopulation.put(1992, 100.0);
+        catPopulation.put(1993, 100.0);
+        catPopulation.put(1994, 200.0);
+        catPopulation.put(1995, 200.0);
+        catPopulation.put(1996, 200.0);
+        catPopulation.put(1997, 200.0);
+
+        for (int i = 0; i < catPopulation.size(); i += 1) {
+            assertThat(catPopulation.years().get(i)).isEqualTo(i + 1991);
+        }
+    }
 } 
