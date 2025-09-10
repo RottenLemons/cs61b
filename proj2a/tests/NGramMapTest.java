@@ -99,4 +99,37 @@ public class NGramMapTest {
         assertThat(fishPlusDogWeight.get(1865)).isWithin(1E-10).of(expectedFishPlusDogWeight1865);
     }
 
+    @Test
+    public void testInvalidWords() {
+        NGramMap ngm = new NGramMap(TOP_14337_WORDS_FILE,
+                TOTAL_COUNTS_FILE);
+
+        // returns the count of the number of occurrences of fish per year between 1850 and 1933.
+        TimeSeries dddCount = ngm.countHistory("ddd", 1850, 1933);
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        dddCount = ngm.countHistory("ddd");
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        dddCount = ngm.weightHistory("ddd", 1850, 1933);
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        dddCount = ngm.weightHistory("ddd");
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        ArrayList<String> words = new ArrayList<>();
+        words.add("ddd");
+        dddCount = ngm.summedWeightHistory(words, 1993, 1996);
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        dddCount = ngm.summedWeightHistory(words);
+        assertThat(dddCount.size()).isEqualTo(0);
+
+        words.add("battlefield");
+        dddCount = ngm.summedWeightHistory(words, 1993, 1996);
+        assertThat(dddCount.get(1994)).isWithin(1E-10).of(86621.0/21746278607.0);
+
+        dddCount = ngm.summedWeightHistory(words);
+        assertThat(dddCount.get(1994)).isWithin(1E-10).of(86621.0/21746278607.0);
+    }
 }  
