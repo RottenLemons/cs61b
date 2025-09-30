@@ -40,7 +40,7 @@ public class Main {
         hns.startUp();
         hns.register("history", new DummyHistoryHandler());
         hns.register("historytext", new DummyHistoryTextHandler());
-        hns.register("hyponyms", new HyponymsHandler(SMALL_HYPONYM_FILE, SMALL_SYNSET_FILE));
+        hns.register("hyponyms", new HyponymsHandler(LARGE_HYPONYM_FILE, LARGE_SYNSET_FILE, SMALL_WORDS_FILE, TOTAL_COUNTS_FILE));
 
         System.out.println("Finished server startup! Visit http://localhost:4567/ngordnet.html");
     }
